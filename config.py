@@ -17,6 +17,8 @@ token_file = config.get('token_file', './storage/token_file.json')
 ya_folder_id = config['ya_folder_id']
 max_user_tts_symbols = config.get('max_user_tts_symbols', 1000)
 max_tts_symbols = config.get('max_tts_symbols', 200)
+max_user_stt_blocks = config.get('max_user_stt_blocks', 12)
+max_stt_blocks = config.get('max_stt_blocks', 1)
 
 
 def create_new_token():

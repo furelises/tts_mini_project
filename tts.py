@@ -2,6 +2,7 @@ import requests
 
 import config
 
+
 def text_to_speech(text: str):
     # Токен, Folder_id для доступа к Yandex SpeechKit
     iam_token, folder_id = config.get_creds()
@@ -39,5 +40,3 @@ if __name__ == "__main__":
     else:
         # Если возникла ошибка, выводим сообщение об ошибке
         print("Ошибка:", response)
-
-
