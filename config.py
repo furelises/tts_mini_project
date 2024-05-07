@@ -8,23 +8,36 @@ from dotenv import dotenv_values
 
 config = dotenv_values(".env")
 
-telegram_token = config['telegram_token']
+TELEGRAM_TOKEN = config['TELEGRAM_TOKEN']
+FOLDER_ID = config['FOLDER_ID']
 
-db_file = config.get('db_file', './storage/db.sqlite')
-log_file = config.get('log_file', './storage/log_file.txt')
-token_file = config.get('token_file', './storage/token_file.json')
+DB_FILE = config.get('DB_FILE', './storage/db.sqlite')
+LOG_FILE = config.get('LOG_FILE', './storage/log_file.txt')
+TOKEN_FILE = config.get('TOKEN_FILE', './storage/token_file.json')
 
-ya_folder_id = config['ya_folder_id']
-max_user_tts_symbols = config.get('max_user_tts_symbols', 1000)
-max_tts_symbols = config.get('max_tts_symbols', 200)
-max_user_stt_blocks = config.get('max_user_stt_blocks', 12)
-max_stt_blocks = config.get('max_stt_blocks', 1)
+# макс. количество пользователей на весь проект
+MAX_USERS = config.get('MAX_USERS', 3)
+# макс. количество токенов у пользователя
+MAX_USER_GPT_TOKENS = config.get('MAX_USER_GPT_TOKENS', 2000)
+# максимальное кол-во токенов в ответе GPT
+MAX_GPT_TOKENS = config.get('MAX_GPT_TOKENS', 120)
+# кол-во последних сообщений из диалога
+COUNT_LAST_MSG = config.get('COUNT_LAST_MSG', 4)
+
+MAX_USER_TTS_SYMBOLS = config.get('MAX_USER_TTS_SYMBOLS', 2000)
+MAX_TTS_SYMBOLS = config.get('MAX_TTS_SYMBOLS', 5000)
+MAX_USER_STT_BLOCKS = config.get('MAX_USER_STT_BLOCKS', 10)
+MAX_STT_BLOCKS = config.get('MAX_STT_BLOCKS', 50)
+
+SYSTEM_PROMPT = [{'role': 'system', 'text': 'Ты веселый собеседник. Общайся со мной на "ты" и используй юмор. '
+                                            'Поддерживай диалог. Не объясняй мне, что ты умеешь и можешь. '
+                                            'Изображай человека'}]
 
 
 def create_new_token():
     metadata_url = "169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token"
     headers = {"Metadata-Flavor": "Google"}
-    token_dir = os.path.dirname(token_file)
+    token_dir = os.path.dirname(TOKEN_FILE)
     if not os.path.exists(token_dir):
         os.makedirs(token_dir)
     try:
@@ -32,7 +45,7 @@ def create_new_token():
         if response.status_code == 200:
             token_data = response.json()
             token_data["expires_at"] = time.time() + token_data["expires_in"]
-            with open(token_file, "w") as t_file:
+            with open(TOKEN_FILE, "w") as t_file:
                 json.dump(token_data, t_file)
             logging.info("Token created")
         else:
@@ -43,7 +56,7 @@ def create_new_token():
 
 def get_creds():
     try:
-        with open(token_file, "r") as f:
+        with open(TOKEN_FILE, "r") as f:
             d = json.loads(f.read())
             expiration = d.get("expires_at")
         if expiration and expiration < time.time():
@@ -51,7 +64,7 @@ def get_creds():
     except Exception as e:
         create_new_token()
 
-    with open(token_file, "r") as f:
+    with open(TOKEN_FILE, "r") as f:
         d = json.loads(f.read())
         token = d["access_token"]
-    return token, ya_folder_id
+    return token, FOLDER_ID

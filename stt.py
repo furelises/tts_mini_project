@@ -1,9 +1,8 @@
 import requests
-
 import config
 
 
-def speech_to_text(data):
+def speech_to_text(data) -> (bool, str | None):
     # iam_token, folder_id для доступа к Yandex SpeechKit
     iam_token, folder_id = config.get_creds()
 
