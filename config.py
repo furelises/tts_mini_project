@@ -35,7 +35,7 @@ SYSTEM_PROMPT = [{'role': 'system', 'text': 'Ты веселый собесед�
 
 
 def create_new_token():
-    metadata_url = "169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token"
+    metadata_url = "http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token"
     headers = {"Metadata-Flavor": "Google"}
     token_dir = os.path.dirname(TOKEN_FILE)
     if not os.path.exists(token_dir):
