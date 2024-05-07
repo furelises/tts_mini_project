@@ -7,13 +7,17 @@ import requests
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
+DIR=os.path.dirname(os.path.abspath(__file__))
+
+
+config = dotenv_values(f"{DIR}/.env")
 
 TELEGRAM_TOKEN = config['TELEGRAM_TOKEN']
 FOLDER_ID = config['FOLDER_ID']
 
-DB_FILE = config.get('DB_FILE', './storage/db.sqlite')
-LOG_FILE = config.get('LOG_FILE', './storage/log_file.txt')
-TOKEN_FILE = config.get('TOKEN_FILE', './storage/token_file.json')
+DB_FILE = config.get('DB_FILE', f'{DIR}/storage/db.sqlite')
+LOG_FILE = config.get('LOG_FILE', f'{DIR}/storage/log_file.txt')
+TOKEN_FILE = config.get('TOKEN_FILE', f'{DIR}/storage/token_file.json')
 
 # макс. количество пользователей на весь проект
 MAX_USERS = config.get('MAX_USERS', 3)
@@ -34,8 +38,9 @@ SYSTEM_PROMPT = [{'role': 'system', 'text': 'Ты веселый собесед�
                                             'Изображай человека'}]
 
 
+
 def create_new_token():
-    metadata_url = "http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token"
+    metadata_url = "http://q169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token"
     headers = {"Metadata-Flavor": "Google"}
     token_dir = os.path.dirname(TOKEN_FILE)
     if not os.path.exists(token_dir):
