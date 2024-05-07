@@ -6,7 +6,6 @@ import time
 import requests
 from dotenv import dotenv_values
 
-config = dotenv_values(".env")
 DIR=os.path.dirname(os.path.abspath(__file__))
 
 
